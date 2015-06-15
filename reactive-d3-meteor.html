@@ -1,11 +1,33 @@
 <head>
-  <title>reactive-d3-meteor</title>
+  <title>Sam Reactive Meteor Example</title>
 </head>
 
 <body>
-  {{> vis}}
+  {{> textTemplate}}
+  {{> circlesTemplate}}
+  {{> gaugeDemo}}
+  {{> chartDemo}}
 </body>
 
-<template name="vis">
+<template name="circlesTemplate">
+  <h3>Circles Demo</h3>
+  <p>The circles diameters will change every second</p>
   <div id="circles"></div>
+</template>
+
+<template name="textTemplate">
+  <h3> Latest Text Data is:  {{latestData}} </h3>
+  <p>This text data is being pushed from the server (could be serialport data in future)</p>
+</template>
+
+<template name="gaugeDemo">
+    <h3>Gauge Demo</h3>
+    <p>The data will change every second to another random value.</p>
+    <div id="container-gauge" style="width: 300px; height: 200px;"></div>
+</template>
+
+<template name="chartDemo">
+    <h3>Chart Demo</h3>
+    <p>The data will change every second to another random value.</p>
+    <div id="container-chart" style="width: 600px; height: 400px;"></div>
 </template>
