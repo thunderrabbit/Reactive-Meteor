@@ -4,10 +4,6 @@ var TextValues  = new Meteor.Collection('textvalues');
 var GaugeValues = new Meteor.Collection('gaugevalues');
 var ChartValues = new Meteor.Collection('chartvalues');
 
-var textArray   = ["Sam", "Sarah", "Dwight", "Bandit", "Michael"];
-var gaugeArray  = [1,90,14,56,22,100,0,150,180,90,44,200];
-var chartArray  = [0.1,0.5,0.15,0.2,0.4,0.3,0.5,0.34];
-
 /*****************************METEOR CLIENT CODE******************************/
 if (Meteor.isClient) {
   
@@ -28,37 +24,8 @@ if (Meteor.isClient) {
     
     //Check Circle Template is rendered
     Template.circlesTemplate.rendered = function () {
-    
-    var svg, width = 500, height = 75, x;
-
-    svg = d3.select('#circles').append('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    var drawCircles = function (update) {
-      var data = Circles.findOne().data;
-      var circles = svg.selectAll('circle').data(data);
-      if (!update) {
-        circles = circles.enter().append('circle')
-          .attr('cx', function (d, i) { return x(i); })
-          .attr('cy', height / 2);
-      } else {
-        circles = circles.transition().duration(1000);
-      }
-      circles.attr('r', function (d) { return d; });
-    };   
-
-   //Circles Observer
-    Circles.find().observe({
-      added: function () {
-        x = d3.scale.ordinal()
-          .domain(d3.range(Circles.findOne().data.length))
-          .rangePoints([0, width], 1);
-        drawCircles(false);
-      },
-      changed: _.partial(drawCircles, true)
-    });
-  };
+        buildCircles();
+    };
     
     //TextValues Observer
     TextValues.find().observe({
@@ -82,9 +49,7 @@ if (Meteor.isClient) {
         console.log("GaugeValues Changed, Latest Data: " , data);
         
         var chart = $('#container-gauge').highcharts(),
-        point,
-        newVal,
-        inc;
+        point;
         point = chart.series[0].points[0];
         point.update(data);       
       }
@@ -99,12 +64,8 @@ if (Meteor.isClient) {
         var data = ChartValues.findOne().data;
         console.log("ChartValues Changed, Latest Data: " , data);
         
-        var chart = $('#container-chart').highcharts(),
-        point,
-        newVal,
-        inc;
+        var chart = $('#container-chart').highcharts();
         var series = chart.series[0];
-        point = chart.series[0].points[0];
         var x = (new Date()).getTime(), // current time
         y = data;
         series.addPoint([x, y], true, true);     
@@ -112,7 +73,40 @@ if (Meteor.isClient) {
     });    
 }
 
+/*
+* Function to draw the circles
+*/
+function buildCircles() {
+    var svg, width = 500, height = 75, x;
 
+    svg = d3.select('#circles').append('svg')
+      .attr('width', width)
+      .attr('height', height);
+
+    var drawCircles = function (update) {
+      var data = Circles.findOne().data;
+      var circles = svg.selectAll('circle').data(data);
+      if (!update) {
+        circles = circles.enter().append('circle')
+          .attr('cx', function (d, i) { return x(i); })
+          .attr('cy', height / 2);
+      } else {
+        circles = circles.transition().duration(1000);
+      }
+      circles.attr('r', function (d) { return d; });
+    };
+
+   //Circles Observer
+    Circles.find().observe({
+      added: function () {
+        x = d3.scale.ordinal()
+          .domain(d3.range(Circles.findOne().data.length))
+          .rangePoints([0, width], 1);
+        drawCircles(false);
+      },
+      changed: _.partial(drawCircles, true)
+    });
+}
 
 /*
 * Function to draw the gauge

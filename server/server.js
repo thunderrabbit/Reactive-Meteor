@@ -5,6 +5,7 @@ var GaugeValues = new Meteor.Collection('gaugevalues');
 var ChartValues = new Meteor.Collection('chartvalues');
 
 var textArray   = ["Sam", "Sarah", "Dwight", "Bandit", "Michael"];
+var circleArray = [5,10,15,20,25,30];
 var gaugeArray  = [1,90,14,56,22,100,0,150,180,90,44,200];
 var chartArray  = [0.1,0.5,0.15,0.2,0.4,0.3,0.5,0.34];
 
@@ -12,7 +13,7 @@ var chartArray  = [0.1,0.5,0.15,0.2,0.4,0.3,0.5,0.34];
 if (Meteor.isServer) {
   Meteor.startup(function () {
     if (Circles.find().count() === 0) {
-      Circles.insert({data: [5,10,15,20,25,30]});
+      Circles.insert({data: circleArray });
     }
     //Populate TextValues database with initial values
     if (TextValues.find().count() === 0) {
