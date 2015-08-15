@@ -97,6 +97,7 @@ function buildColorfulCircles() {
       var circles = svg.selectAll('circle').data(data);
       if (!update) {
         circles = circles.enter().append('circle')
+          .attr('fill', function(d) {return d.c})
           .attr('cx', function (d, i) { return x(i); })
           .attr('cy', height / 2);
       } else {
