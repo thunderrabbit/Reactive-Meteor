@@ -10,11 +10,28 @@ var circleArray = [5,10,15,20,25,30];
 var gaugeArray  = [1,90,14,56,22,100,0,150,180,90,44,200];
 var chartArray  = [0.1,0.5,0.15,0.2,0.4,0.3,0.5,0.34];
 
+// Each of these represents a different record in the DB
+var colorfulCircleArray  = [
+{r: 5, c:'#ffffff'},
+{r:10, c:'#ff00ff'},
+{r:15, c:'#ffff00'},
+{r:20, c:'#00ffff'},
+{r:25, c:'#f00fff'},
+];
+
 /*****************************METEOR SERVER CODE******************************/
 if (Meteor.isServer) {
   Meteor.startup(function () {
+    //Populate Circles database with initial values
     if (Circles.find().count() === 0) {
       Circles.insert({data: circleArray });
+    }
+    //Populate ColorfulCircles database with initial values
+    if (Colorful.find().count() === 0) {
+      // Create a record for each item in the array
+      colorfulCircleArray.forEach(function(item) {
+        Colorful.insert(item);
+      })
     }
     //Populate TextValues database with initial values
     if (TextValues.find().count() === 0) {
