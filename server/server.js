@@ -12,7 +12,7 @@ var chartArray  = [0.1,0.5,0.15,0.2,0.4,0.3,0.5,0.34];
 
 // Each of these represents a different record in the DB
 var colorfulCircleArray  = [
-{r: 5, c:'#ffffff'},
+{r: 5, c:'#000000'},
 {r:10, c:'#ff00ff'},
 {r:15, c:'#ffff00'},
 {r:20, c:'#00ffff'},
