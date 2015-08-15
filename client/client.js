@@ -49,9 +49,7 @@ if (Meteor.isClient) {
         console.log("GaugeValues Changed, Latest Data: " , data);
         
         var chart = $('#container-gauge').highcharts(),
-        point,
-        newVal,
-        inc;
+        point;
         point = chart.series[0].points[0];
         point.update(data);       
       }
@@ -66,12 +64,8 @@ if (Meteor.isClient) {
         var data = ChartValues.findOne().data;
         console.log("ChartValues Changed, Latest Data: " , data);
         
-        var chart = $('#container-chart').highcharts(),
-        point,
-        newVal,
-        inc;
+        var chart = $('#container-chart').highcharts();
         var series = chart.series[0];
-        point = chart.series[0].points[0];
         var x = (new Date()).getTime(), // current time
         y = data;
         series.addPoint([x, y], true, true);     
