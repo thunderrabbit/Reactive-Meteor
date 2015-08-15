@@ -85,12 +85,15 @@ if (Meteor.isClient) {
 function buildColorfulCircles() {
     var svg, width = 500, height = 75, x;
 
+    var circleCursor = Colorful.find({});
+    var circleNodes = circleCursor.fetch();
+
     svg = d3.select('#colorful-circles').append('svg')
       .attr('width', width)
       .attr('height', height);
 
     var drawCircles = function (update) {
-      var data = Circles.findOne().data;
+      var data = circleCursor.fetch();
       var circles = svg.selectAll('circle').data(data);
       if (!update) {
         circles = circles.enter().append('circle')
@@ -99,18 +102,21 @@ function buildColorfulCircles() {
       } else {
         circles = circles.transition().duration(1000);
       }
-      circles.attr('r', function (d) { return d; });
+      circles.attr('r', function (d) { return d.r; });
     };
 
-   //Circles Observer
-    Circles.find().observe({
-      added: function () {
+   //Colorful Observer
+    Colorful.find().observe({
+      added: function (doc) {
+        circleNodes.push(doc);
         x = d3.scale.ordinal()
-          .domain(d3.range(Circles.findOne().data.length))
+          .domain(d3.range(Colorful.find().count()))
           .rangePoints([0, width], 1);
         drawCircles(false);
       },
-      changed: _.partial(drawCircles, true)
+      changed: function(doc) {
+        drawCircles(true);
+      }
     });
 }
 
