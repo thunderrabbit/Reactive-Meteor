@@ -1,5 +1,6 @@
 //Mongodb Collections
 var Circles     = new Meteor.Collection('circles');
+var Colorful    = new Meteor.Collection('colorfulcircles');
 var TextValues  = new Meteor.Collection('textvalues');
 var GaugeValues = new Meteor.Collection('gaugevalues');
 var ChartValues = new Meteor.Collection('chartvalues');
@@ -27,6 +28,11 @@ if (Meteor.isClient) {
         buildCircles();
     };
     
+    //Check Circle Template is rendered
+    Template.colorfulCirclesTemplate.rendered = function () {
+        buildColorfulCircles();
+    };
+
     //TextValues Observer
     TextValues.find().observe({
       added: function (text) {
@@ -74,6 +80,51 @@ if (Meteor.isClient) {
 }
 
 /*
+* Function to draw colorful circles
+*/
+function buildColorfulCircles() {
+    var svg, width = 500, height = 75, x;
+
+    var circleCursor = Colorful.find({});
+    var circleNodes = circleCursor.fetch();
+
+    svg = d3.select('#colorful-circles').append('svg')
+      .attr('width', width)
+      .attr('height', height);
+
+    var drawCircles = function (update) {
+      var data = circleCursor.fetch();
+      var circles = svg.selectAll('circle').data(data);
+      if (!update) {
+        circles = circles.enter().append('circle')
+          .attr('fill', function(d) {return d.c})
+          .attr('cx', function (d, i) { return x(i); })
+          .attr('cy', height / 2)
+          .on("click", function(d){
+            Colorful.update({_id:d._id},{r:Math.random()*90+5,c:d.c});
+        });
+      } else {
+        circles = circles.transition().duration(1000);
+      }
+      circles.attr('r', function (d) { return d.r; });
+    };
+
+   //Colorful Observer
+    Colorful.find().observe({
+      added: function (doc) {
+        circleNodes.push(doc);
+        x = d3.scale.ordinal()
+          .domain(d3.range(Colorful.find().count()))
+          .rangePoints([0, width], 1);
+        drawCircles(false);
+      },
+      changed: function(doc) {
+        drawCircles(true);
+      }
+    });
+}
+
+/*
 * Function to draw the circles
 */
 function buildCircles() {
@@ -88,6 +139,7 @@ function buildCircles() {
       var circles = svg.selectAll('circle').data(data);
       if (!update) {
         circles = circles.enter().append('circle')
+          .attr('class', 'purple')
           .attr('cx', function (d, i) { return x(i); })
           .attr('cy', height / 2);
       } else {
