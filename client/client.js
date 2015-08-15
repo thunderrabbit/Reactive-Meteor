@@ -99,7 +99,10 @@ function buildColorfulCircles() {
         circles = circles.enter().append('circle')
           .attr('fill', function(d) {return d.c})
           .attr('cx', function (d, i) { return x(i); })
-          .attr('cy', height / 2);
+          .attr('cy', height / 2)
+          .on("click", function(d){
+            Colorful.update({_id:d._id},{r:Math.random()*90+5,c:d.c});
+        });
       } else {
         circles = circles.transition().duration(1000);
       }
