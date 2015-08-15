@@ -1,5 +1,6 @@
 //Mongodb Collections
 var Circles     = new Meteor.Collection('circles');
+var Colorful    = new Meteor.Collection('colorfulcircles');
 var TextValues  = new Meteor.Collection('textvalues');
 var GaugeValues = new Meteor.Collection('gaugevalues');
 var ChartValues = new Meteor.Collection('chartvalues');
